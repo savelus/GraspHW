@@ -1,35 +1,46 @@
+using System;
 using Bullets;
 using Components;
+using Input;
 using UnityEngine;
 
 namespace Character {
     public sealed class CharacterController : MonoBehaviour {
-        [SerializeField] private GameObject character;
+        [SerializeField] private GameObject _characterGO;
         [SerializeField] private GameManager.GameManager gameManager;
         [SerializeField] private BulletSystem _bulletSystem;
         [SerializeField] private BulletConfig _bulletConfig;
 
+        [SerializeField] private Character _character;
+        [SerializeReference] private InputArrowSystem _inputManager;
+        
         public bool _fireRequired;
 
+        private EntityMoveController _entityMoveController;
+        
+        private void Awake() {
+            _entityMoveController = new EntityMoveController(_character.MoveComponent, _inputManager);
+        }
+
         private void OnEnable() {
-            this.character.GetComponent<HitPointsComponent>().hpEmpty += this.OnCharacterDeath;
+            this._characterGO.GetComponent<HitPointsComponent>().hpEmpty += this.OnCharacterDeath;
         }
 
         private void OnDisable() {
-            this.character.GetComponent<HitPointsComponent>().hpEmpty -= this.OnCharacterDeath;
+            this._characterGO.GetComponent<HitPointsComponent>().hpEmpty -= this.OnCharacterDeath;
         }
 
         private void OnCharacterDeath(GameObject _) => this.gameManager.FinishGame();
 
         private void FixedUpdate() {
-            if (this._fireRequired) {
-                this.OnFlyBullet();
-                this._fireRequired = false;
+            if (_fireRequired) {
+                OnFlyBullet();
+                _fireRequired = false;
             }
         }
 
         private void OnFlyBullet() {
-            var weapon = this.character.GetComponent<WeaponComponent>();
+            var weapon = this._characterGO.GetComponent<WeaponComponent>();
             _bulletSystem.FlyBulletByArgs(new BulletSystem.Args {
                 isPlayer = true,
                 physicsLayer = (int)this._bulletConfig.physicsLayer,

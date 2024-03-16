@@ -36,8 +36,7 @@ namespace Enemy.Agents
                 return;
             }
 
-            var direction = vector.normalized * Time.fixedDeltaTime;
-            this.moveComponent.MoveByRigidbodyVelocity(direction);
+            this.moveComponent.MoveByRigidbodyVelocity(vector.normalized);
         }
     }
 }
