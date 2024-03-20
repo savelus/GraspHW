@@ -28,8 +28,8 @@ namespace Enemy
                 {
                     if (this.m_activeEnemies.Add(enemy))
                     {
-                        enemy.GetComponent<HitPointsComponent>().hpEmpty += this.OnDestroyed;
-                        enemy.GetComponent<EnemyAttackAgent>().OnFire += this.OnFire;
+                        enemy.GetComponent<HitPointsComponent>().SubscribeOnDeath(OnDestroyed);
+                        enemy.GetComponent<EnemyAttackAgent>().OnFire += OnFire;
                     }    
                 }
             }
@@ -39,8 +39,8 @@ namespace Enemy
         {
             if (m_activeEnemies.Remove(enemy))
             {
-                enemy.GetComponent<HitPointsComponent>().hpEmpty -= this.OnDestroyed;
-                enemy.GetComponent<EnemyAttackAgent>().OnFire -= this.OnFire;
+                enemy.GetComponent<HitPointsComponent>().UnsubscribeOnDeath(OnDestroyed);
+                enemy.GetComponent<EnemyAttackAgent>().OnFire -= OnFire;
 
                 _enemyPool.UnspawnEnemy(enemy);
             }

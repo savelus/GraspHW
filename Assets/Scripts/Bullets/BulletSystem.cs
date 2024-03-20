@@ -44,13 +44,13 @@ namespace Bullets
 
         public void FlyBulletByArgs(Args args)
         {
-            if (this.m_bulletPool.TryDequeue(out var bullet))
+            if (m_bulletPool.TryDequeue(out var bullet))
             {
-                bullet.transform.SetParent(this.worldTransform);
+                bullet.transform.SetParent(worldTransform);
             }
             else
             {
-                bullet = Instantiate(this.prefab, this.worldTransform);
+                bullet = Instantiate(prefab, worldTransform);
             }
 
             bullet.SetPosition(args.position);
@@ -60,25 +60,25 @@ namespace Bullets
             bullet.isPlayer = args.isPlayer;
             bullet.SetVelocity(args.velocity);
             
-            if (this.m_activeBullets.Add(bullet))
+            if (m_activeBullets.Add(bullet))
             {
-                bullet.OnCollisionEntered += this.OnBulletCollision;
+                bullet.OnCollisionEntered += OnBulletCollision;
             }
         }
         
         private void OnBulletCollision(Bullet bullet, Collision2D collision)
         {
             BulletUtils.DealDamage(bullet, collision.gameObject);
-            this.RemoveBullet(bullet);
+            RemoveBullet(bullet);
         }
 
         private void RemoveBullet(Bullet bullet)
         {
-            if (this.m_activeBullets.Remove(bullet))
+            if (m_activeBullets.Remove(bullet))
             {
-                bullet.OnCollisionEntered -= this.OnBulletCollision;
-                bullet.transform.SetParent(this.container);
-                this.m_bulletPool.Enqueue(bullet);
+                bullet.OnCollisionEntered -= OnBulletCollision;
+                bullet.transform.SetParent(container);
+                m_bulletPool.Enqueue(bullet);
             }
         }
         

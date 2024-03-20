@@ -5,10 +5,7 @@ namespace Enemy.Agents
 {
     public sealed class EnemyMoveAgent : MonoBehaviour
     {
-        public bool IsReached
-        {
-            get { return this.isReached; }
-        }
+        public bool IsReached => isReached;
 
         [SerializeField] private MoveComponent moveComponent;
 
@@ -18,25 +15,25 @@ namespace Enemy.Agents
 
         public void SetDestination(Vector2 endPoint)
         {
-            this.destination = endPoint;
-            this.isReached = false;
+            destination = endPoint;
+            isReached = false;
         }
 
         private void FixedUpdate()
         {
-            if (this.isReached)
+            if (isReached)
             {
                 return;
             }
             
-            var vector = this.destination - (Vector2) this.transform.position;
+            var vector = destination - (Vector2) transform.position;
             if (vector.magnitude <= 0.25f)
             {
-                this.isReached = true;
+                isReached = true;
                 return;
             }
 
-            this.moveComponent.MoveByRigidbodyVelocity(vector.normalized);
+            moveComponent.MoveByRigidbodyVelocity(vector.normalized);
         }
     }
 }
